@@ -1,103 +1,198 @@
-import Image from "next/image";
+// src/app/page.tsx
+"use client";
+
+import { useState, useEffect } from 'react'; // Make sure useEffect is imported
+import MainLayout from '@/components/layout/MainLayout';
+import Link from 'next/link';
+import Image from 'next/image'; 
+import { ChevronLeft, ChevronRight, Search, Bell, MessageCircle } from 'lucide-react'; 
+import { personas } from '@/lib/data/personas';
+import { games } from '@/lib/data/games';
+import { chatrooms as initialChatroomsData } from '@/lib/data/chatrooms'; // Renamed import
+import { ChatroomCard } from './components/ui'; 
+import { Hero } from './components/ui/hero'; 
+import FuturisticCarousel from './components/ui/PersonaPreview'; 
+import GameCard, { GameCardProps } from './components/ui/GameCard'; 
+import type { Chatroom } from '@/lib/types'; // Corrected import path
+
+// Define an extended Chatroom type for client-side state if needed
+interface ClientChatroom extends Chatroom {
+  clientActiveUsers?: number;
+}
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [personaPage, setPersonaPage] = useState(0);
+  const [chatroomPage, setChatroomPage] = useState(0);
+  const [gamePage, setGamePage] = useState(0);
+  
+  const personasPerPage = 8;
+  const chatroomsPerPage = 4; 
+  const gamesPerPage = 2;
+  
+  const featuredPersonas = personas.slice(0, 3); 
+  const recentDMs = personas.filter(persona => persona.lastMessage); 
+  const featuredGames = games.filter(game => game.featured); 
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  // State for chatrooms to handle client-side specific data like random activeUsers
+  const [chatrooms, setChatrooms] = useState<ClientChatroom[]>(initialChatroomsData);
+
+  useEffect(() => {
+    // This effect runs once on the client after initial hydration
+    // It updates chatroom data with client-side generated values if needed
+    setChatrooms(prevChatrooms => 
+      prevChatrooms.map(cr => {
+        // If activeUsers is missing or needs to be randomized client-side
+        // Access activeUsers from the original Chatroom type (cr)
+        if (cr.activeUsers === undefined || cr.activeUsers === null) {
+          return { ...cr, clientActiveUsers: Math.floor(Math.random() * 20) + 5 };
+        }
+        // Ensure all properties of Chatroom are spread, and clientActiveUsers is explicitly part of ClientChatroom
+        return { ...cr, clientActiveUsers: cr.activeUsers }; // Ensure clientActiveUsers is set even if original activeUsers exists
+      })
+    );
+  }, []); // Empty dependency array ensures this runs only once on mount
+
+  const activeChatrooms = chatrooms; // Use the state variable
+  
+  const totalPersonaPages = Math.ceil(recentDMs.length / personasPerPage);
+  const totalChatroomPages = Math.ceil(activeChatrooms.length / chatroomsPerPage);
+  const totalGamePages = Math.ceil(featuredGames.length / gamesPerPage);
+  
+  const currentPersonas = recentDMs.slice(
+    personaPage * personasPerPage, 
+    (personaPage + 1) * personasPerPage
+  );
+  
+  const currentChatrooms = activeChatrooms.slice(
+    chatroomPage * chatroomsPerPage, 
+    (chatroomPage + 1) * chatroomsPerPage
+  );
+  
+  const currentGamesToDisplay = featuredGames.slice(
+    gamePage * gamesPerPage, 
+    (gamePage + 1) * gamesPerPage
+  );
+  
+  const nextPersonaPage = () => {
+    setPersonaPage((prev) => (prev + 1) % totalPersonaPages);
+  };
+  
+  const prevPersonaPage = () => {
+    setPersonaPage((prev) => (prev === 0 ? totalPersonaPages - 1 : prev - 1));
+  };
+  
+  const nextChatroomPage = () => {
+    setChatroomPage((prev) => (prev + 1) % totalChatroomPages);
+  };
+  
+  const prevChatroomPage = () => {
+    setChatroomPage((prev) => (prev === 0 ? totalChatroomPages - 1 : prev - 1));
+  };
+  
+  const nextGamePage = () => {
+    setGamePage((prev) => (prev + 1) % totalGamePages);
+  };
+  
+  const prevGamePage = () => {
+    setGamePage((prev) => (prev === 0 ? totalGamePages - 1 : prev - 1));
+  };
+
+  return (
+    <MainLayout>
+      <div className="">
+        <div className="mb-4">
+          <Hero />
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+        
+        <div>
+          <div className="flex justify-between items-center mb-3 sm:mb-4 md:mb-5 lg:mb-6">
+            <h2 className="text-3xl sm:text-3xl bg-gradient-to-r from-[#00ffaa] to-[#00ffdd] bg-clip-text text-transparent font-medium">Chatrooms</h2>
+            <div className="flex items-center space-x-2">
+              <Link href="/chatrooms" className="text-sm sm:text-base bg-gradient-to-r from-[#00ffaa] to-[#00ffdd] bg-clip-text text-transparent hover:opacity-80 transition-opacity">
+                View all
+              </Link>
+              <div className="hidden md:flex space-x-1">
+                <button 
+                  onClick={prevChatroomPage}
+                  className="w-6 h-6 flex items-center justify-center rounded-full bg-neutral-800/60 hover:bg-neutral-700/80 transition-colors"
+                  aria-label="Previous chatroom page"
+                >
+                  <ChevronLeft size={16} className="text-white" />
+                </button>
+                <button 
+                  onClick={nextChatroomPage}
+                  className="w-6 h-6 flex items-center justify-center rounded-full bg-neutral-800/60 hover:bg-neutral-700/80 transition-colors"
+                  aria-label="Next chatroom page"
+                >
+                  <ChevronRight size={16} className="text-white" />
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <div className="md:hidden w-full overflow-x-auto scrollbar-hide p-4">
+            <div className="flex space-x-4 sm:space-x-5 px-3 py-3"> 
+              {activeChatrooms.map((chatroom, idx) => (
+                <ChatroomCard 
+                  key={chatroom.id}
+                  id={chatroom.id}
+                  name={chatroom.name}
+                  participants={chatroom.participants}
+                  activeUsers={chatroom.clientActiveUsers !== undefined ? chatroom.clientActiveUsers : chatroom.activeUsers} // Prefer clientActiveUsers, fallback to activeUsers from original type
+                  thumbnail={chatroom.thumbnail || `/chatrooms/default-${idx % 4 + 1}.jpg`}
+                  description={chatroom.description || "Explore the AI universe"}
+                  tags={chatroom.tags || ["AI", "Chat", "Technology"]}
+                  status={chatroom.status || "active"}
+                />
+              ))}
+            </div>
+          </div>
+          
+          <div className="hidden md:grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            {currentChatrooms.map((chatroom, idx) => (
+              <ChatroomCard 
+                key={chatroom.id}
+                id={chatroom.id}
+                name={chatroom.name}
+                participants={chatroom.participants}
+                activeUsers={chatroom.clientActiveUsers !== undefined ? chatroom.clientActiveUsers : chatroom.activeUsers} // Prefer clientActiveUsers, fallback to activeUsers from original type
+                thumbnail={chatroom.thumbnail || `/chatrooms/default-${idx % 4 + 1}.jpg`}
+                description={chatroom.description || "Explore the AI universe"}
+                tags={chatroom.tags || ["AI", "Chat", "Technology"]}
+                status={chatroom.status || "active"}
+              />
+            ))}
+          </div>
+        </div>
+        
+        <div className="mt-10 mb-8">
+          <h2 className="text-3xl bg-gradient-to-r from-[#00ffaa] to-[#00ffdd] bg-clip-text text-transparent font-medium -mb-8">
+            Persona Preview
+          </h2>
+          <div className="p-4 relative overflow-hidden"> 
+            <FuturisticCarousel />
+          </div>
+        </div>
+        
+        {/* Game Zone Section */}
+        <div className="mt-10 mb-8">
+          <h2 className="text-3xl bg-gradient-to-r from-[#00ffaa] to-[#00ffdd] bg-clip-text text-transparent font-medium mb-3 sm:mb-4 md:mb-5 lg:mb-6">
+            Game-Zone
+          </h2>
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6"> 
+            {currentGamesToDisplay.map(game => ( 
+              <GameCard
+                key={game.id}
+                id={String(game.id)} 
+                title={game.title}
+                logoUrl={game.logo || game.thumbnail || '/games/default-logo.png'} 
+                matches={game.matches || []} 
+                gamePath={`/game-zone/${game.id}`}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    </MainLayout>
   );
 }

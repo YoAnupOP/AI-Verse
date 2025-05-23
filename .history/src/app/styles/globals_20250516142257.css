@@ -1,0 +1,629 @@
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;700&family=Orbitron:wght@400;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* AI Verse Theme - Updated Color Palette */
+
+    /* Core Theme Colors (HSL for ShadCN compatibility) */
+    --background: 225 30% 6%;          /* Deep Black/Dark Background */
+    --foreground: 0 0% 100%;           /* Pure White Text */
+
+    --card: 225 30% 8%;                /* Slightly Lighter Card Background */
+    --card-foreground: 0 0% 100%;      /* White Text on Cards */
+
+    --popover: 225 30% 7%;             /* Dark Popover Background */
+    --popover-foreground: 0 0% 100%;   /* White Text on Popovers */
+
+    /* Primary colors based on the cyan/teal gradient (#00ffaa to #00ffdd) */
+    --primary: 157 100% 50%;           /* #00ffaa - Bright Cyan/Teal */
+    --primary-foreground: 0 0% 100%;   /* White Text on Primary */
+
+    --secondary: 180 100% 50%;         /* #00ffdd - Bright Cyan */
+    --secondary-foreground: 225 30% 9%;/* Dark Text on Secondary */
+
+    --muted: 225 20% 15%;              /* Muted Dark Background */
+    --muted-foreground: 0 0% 80%;      /* Light Gray Text */
+
+    --accent: 180 100% 50%;            /* Accent Cyan (#00ffdd) */
+    --accent-foreground: 225 30% 9%;   /* Dark Text for Bright Accent */
+
+    --destructive: 0 100% 60%;         /* Bright Red (Warning) */
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 20%;                /* Dark Border */
+    --input: 225 30% 10%;              /* Input Field Background */
+    --ring: 157 100% 50%;              /* Focus Ring (#00ffaa) */
+    
+    --radius: 0.75rem;                 /* Existing radius */
+
+    /* Sidebar variables - aligned with new theme */
+    --sidebar-background: 225 30% 6%;  /* Match main background */
+    --sidebar-foreground: 0 0% 100%;   /* White text */
+    --sidebar-primary: 157 100% 50%;   /* Match primary */
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 180 100% 50%;    /* Match accent */
+    --sidebar-accent-foreground: 225 30% 9%;
+    --sidebar-border: 0 0% 20%;        /* Match border */
+    --sidebar-ring: 157 100% 50%;      /* Match ring */
+
+    /* Custom variables updated to new theme */
+    --primary-color: hsl(var(--primary));
+    --primary-dark: hsl(157, 100%, 40%);    /* Darker Primary (#00cc88) */
+    --primary-light: hsl(157, 100%, 60%);   /* Lighter Primary (#4dffbb) */
+    --background-dark: hsl(var(--background));
+    --background-light: hsl(var(--card));
+    
+    /* RGB values for gradients and opacity */
+    --foreground-rgb: 255, 255, 255;          /* White text */
+    --background-start-rgb: 15, 17, 25;       /* Dark background start */
+    --background-end-rgb: 10, 12, 20;         /* Darker background end */
+
+    /* Gradient colors */
+    --gradient-start: #00ffaa;                /* Start of gradient */
+    --gradient-end: #00ffdd;                  /* End of gradient */
+    --glow-shadow: rgba(0, 220, 180, 0.2);    /* Glow effect for shadows */
+
+    /* User's custom metadata variables - untouched */
+    --title: "AI Verse";
+    --author: "Matt Cannon";
+
+    /* Carousel component variables */
+    --glow-primary: rgba(56, 189, 248, 0.7);
+    --glow-secondary: rgba(94, 234, 212, 0.6);
+    --neon-pink: rgba(236, 72, 153, 0.8);
+    --neon-blue: rgba(59, 130, 246, 0.8);
+    --neon-green: rgba(16, 185, 129, 0.8);
+    
+    /* Forcing dark mode for the body */
+    color-scheme: dark;
+  }
+}
+
+body {
+  @apply bg-background text-foreground;
+  font-family: 'Inter', sans-serif;
+  font-family: "Exo 2", sans-serif;
+}
+
+/* Background grid effect */
+body::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: linear-gradient(rgba(14, 165, 233, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(14, 165, 233, 0.1) 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-position: center center;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+  animation: gridMove 60s linear infinite;
+  z-index: -10; /* Ensure it's behind everything */
+}
+
+.glow-sm {
+  box-shadow: 0 0 5px 0 rgba(0, 255, 128, 0.3);
+}
+
+.glow-md {
+  box-shadow: 0 0 10px 0 rgba(0, 255, 128, 0.4);
+}
+
+.glow-lg {
+  box-shadow: 0 0 20px 2px rgba(0, 255, 128, 0.5);
+}
+
+.portal-card-pseudos::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 19px;
+  padding: 1px;
+  /* New Gradient: Neon Cyan to Electric Blue */
+  background: linear-gradient(135deg, hsl(var(--accent)), hsl(var(--primary)));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0.9;
+  transition: opacity 1.5s ease;
+  z-index: 2;
+  /* New Shadow: Glowing Neon Cyan */
+  box-shadow: 0 0 25px hsla(var(--accent), 0.6), 0 0 15px hsla(var(--primary), 0.3);
+}
+
+.portal-card-pseudos::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  /* New Gradient Backdrop: Subtle Neon Cyan to Electric Blue */
+  background: linear-gradient(
+    135deg,
+    hsla(var(--accent), 0.1) 0%, /* Reduced opacity for subtlety */
+    hsla(var(--primary), 0.1) 100%
+  );
+  opacity: 0.6; /* Slightly increased opacity for more presence */
+  z-index: 1;
+}
+
+.portal-button-pseudo::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* New Button Hover Gradient */
+  background: linear-gradient(
+    90deg,
+    hsla(var(--accent), 0.35),
+    hsla(var(--primary), 0.35)
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.portal-button-pseudo:hover::before {
+  opacity: 1;
+}
+
+.portal-card-zoom {
+  transition: transform 2s ease-out, opacity 1.5s ease-in !important;
+}
+
+.portal-card-zoom.zoomed-in {
+  transform: translateZ(500px) scale(6) !important;
+  opacity: 0 !important;
+}
+
+.portal-card-zoom.zoomed-in::before,
+.portal-card-zoom.zoomed-in::after {
+  opacity: 0 !important;
+}
+
+.portal-card-zoom.zoomed-in .portal-content-wrapper {
+  opacity: 0 !important;
+  transform: scale(0.5) !important;
+}
+
+/* Custom Scrollbar - Themed */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: hsl(var(--background)); /* Dark background for track */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: hsl(var(--muted)); /* Muted color for thumb */
+  @apply rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: hsl(var(--secondary)); /* Cosmic purple on hover */
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Carousel Component Styles */
+.transform-style-preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.perspective-2000 {
+  perspective: 2000px;
+}
+
+/* Carousel keyframe animations */
+@keyframes gridMove {
+  0% {
+    background-position: 0px 0px;
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.2;
+  }
+  100% {
+    background-position: 40px 40px;
+    opacity: 0.5;
+  }
+}
+
+/* Holographic border effect for active card (applied via class .holographic-border-active) */
+.carousel-card.holographic-border-active::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(
+    45deg,
+    transparent 0%,
+    var(--neon-blue) 25%,
+    var(--neon-green) 50%,
+    var(--neon-pink) 75%,
+    transparent 100%
+  );
+  z-index: -1;
+  border-radius: 1.3rem; /* Slightly larger than card's rounded-3xl */
+  filter: blur(8px);
+  opacity: 1; /* Controlled by class, here it's on */
+  transition: opacity 0.5s ease;
+  animation: borderGlow 6s linear infinite;
+  background-size: 300% 300%;
+}
+
+@keyframes borderGlow {
+  0% {
+    background-position: 0% 50%;
+    opacity: 0.3;
+  }
+  50% {
+    background-position: 100% 50%;
+    opacity: 0.5;
+  }
+  100% {
+    background-position: 0% 50%;
+    opacity: 0.3;
+  }
+}
+
+/* HUD overlay effect on images */
+.card-image-container::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(120deg, rgba(56, 189, 248, 0.1), transparent 70%),
+    radial-gradient(circle at 80% 20%, rgba(94, 234, 212, 0.15), transparent 50%);
+  pointer-events: none;
+}
+
+/* Scan line effect */
+.card-image-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(6, 182, 212, 0.05) 0px,
+    rgba(6, 182, 212, 0.05) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+  pointer-events: none;
+  opacity: 0.5;
+  z-index: 5;
+}
+
+/* Text glow effect (applied via class .text-glow-active on card title) */
+.card-title.text-glow-active::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: transparent;
+  -webkit-text-stroke: 0.5px; /* Will use the current text color */
+  filter: blur(3px);
+  opacity: 0.8; /* Controlled by class, here it's on */
+  transition: opacity 0.3s ease;
+}
+
+/* Button hover effect (applied via class .button-glow-hover on buttons) */
+.carousel-button.button-glow-hover::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background: radial-gradient(circle, var(--neon-blue), transparent 70%);
+  border-radius: 50%;
+  opacity: 0.7;
+  z-index: -1;
+  transition: opacity 0.3s ease;
+  animation: pulseGlow 2s infinite;
+}
+
+@keyframes pulseGlow {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+}
+
+/* Active card scanning animation */
+@keyframes scanAnimation {
+  0% { top: 0; opacity: 0.7; }
+  75% { top: calc(100% - 2px); opacity: 0.7; }
+  100% { top: calc(100% - 2px); opacity: 0; }
+}
+
+.scan-line-animate {
+  animation: scanAnimation 2s ease-in-out;
+}
+
+@layer components {
+  /* Glassmorphism Effects - will adopt new theme colors via variables */
+  .glassmorphism {
+    /* Adjusted for darker theme, using HSL variables for background */
+    @apply backdrop-blur-md bg-[hsla(var(--card),0.5)] border border-[hsla(var(--border),0.5)] rounded-xl shadow-lg;
+  }
+
+  .glassmorphism-light {
+    @apply backdrop-blur-sm bg-[hsla(var(--foreground),0.05)] border-b border-[hsla(var(--border),0.3)];
+  }
+
+  .glassmorphism-dark {
+    @apply backdrop-blur-sm bg-[hsla(var(--background),0.4)] border-r border-[hsla(var(--border),0.4)];
+  }
+
+  .glass-panel {
+    @apply bg-[hsla(var(--background),0.6)] backdrop-blur-md border border-[hsla(var(--border),0.5)] rounded-2xl;
+  }
+  
+  .pill {
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    padding: 0.15rem 0.5rem;
+    border-radius: 9999px;
+    letter-spacing: 0.05em;
+    /* Example: A pill using accent color */
+    @apply bg-[hsl(var(--accent))] text-[hsl(var(--accent-foreground))];
+  }
+  
+  .sidebar-icon {
+    @apply flex h-10 w-10 items-center justify-center rounded-lg text-[hsla(var(--foreground),0.8)] hover:bg-[hsla(var(--foreground),0.1)] hover:text-[hsl(var(--foreground))] transition-all;
+  }
+
+  /* Text Gradient - Themed */
+  .text-gradient {
+    /* Uses Neon Cyan to Electric Blue */
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-[hsl(var(--accent))] to-[hsl(var(--primary))];
+  }
+
+  .tooltip-right::after {
+    content: attr(data-tooltip);
+    /* Tooltip using card background */
+    @apply absolute left-full ml-2 px-2 py-1 rounded bg-[hsl(var(--card))] text-[hsl(var(--card-foreground))] text-xs whitespace-nowrap opacity-0 invisible transition-opacity;
+  }
+
+  .tooltip-right:hover::after {
+    @apply opacity-100 visible;
+  }
+
+  /* Active Navigation Indicator - Themed */
+  .nav-active {
+    @apply relative text-[hsl(var(--primary))]; /* Electric Blue for active nav */
+  }
+
+  .nav-active::before {
+    content: '';
+    @apply absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-[hsl(var(--primary))] rounded-r-full;
+  }
+
+  /* Custom Button - Themed */
+  .btn-primary {
+    /* Gradient from Neon Cyan to Electric Blue, subtle shadow with Primary color */
+    @apply bg-gradient-to-r from-[hsl(var(--accent))] to-[hsl(var(--primary))] hover:from-[hsl(var(--primary))] hover:to-[hsl(var(--secondary))] 
+      text-[hsl(var(--primary-foreground))] font-medium py-2 px-4 rounded-lg transition-all shadow-lg hover:shadow-[0_0_15px_3px_hsla(var(--primary),0.4)];
+  }
+
+  .btn-secondary {
+    /* Uses secondary color for background */
+    @apply bg-[hsl(var(--secondary))] hover:bg-[hsl(270,80%,60%)] text-[hsl(var(--secondary-foreground))] font-medium py-2 px-4 rounded-lg 
+      transition-all border border-[hsl(var(--secondary))] hover:border-[hsl(270,80%,55%)];
+  }
+
+  /* Card Hover Effects - Themed */
+  .hover-card {
+    /* Shadow uses Primary color */
+    @apply transition-all duration-300 hover:shadow-lg hover:shadow-[0_0_20px_5px_hsla(var(--primary),0.15)] hover:-translate-y-1;
+  }
+
+  /* Custom Input Style - Themed */
+  .input-primary {
+    @apply bg-[hsl(var(--input))] border border-[hsl(var(--border))] rounded-lg py-2 px-4 text-[hsl(var(--foreground))] placeholder-[hsl(var(--muted-foreground))]
+      focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))] focus:border-transparent;
+  }
+
+  /* Status Indicators - border color updated to new background */
+  .status-online {
+    @apply w-3 h-3 bg-green-500 rounded-full border-2 border-[hsl(var(--background))];
+  }
+
+  .status-away {
+    @apply w-3 h-3 bg-yellow-500 rounded-full border-2 border-[hsl(var(--background))];
+  }
+
+  .status-offline {
+    @apply w-3 h-3 bg-gray-500 rounded-full border-2 border-[hsl(var(--background))];
+  }
+  
+  @keyframes border-follow {
+    0% { left: 0; top: 0; transform: translate(-50%, -50%); }
+    25% { left: 100%; top: 0; transform: translate(-50%, -50%); }
+    50% { left: 100%; top: 100%; transform: translate(-50%, -50%); }
+    75% { left: 0; top: 100%; transform: translate(-50%, -50%); }
+    100% { left: 0; top: 0; transform: translate(-50%, -50%); }
+  }
+  
+  /* Keyframes updated to use CSS variables */
+  @keyframes color-change {
+    0%, 33%, 66%, 100% { color: hsl(var(--primary)); }
+  }
+  
+  @keyframes border-color-change {
+    0%, 33%, 66%, 100% { border-color: hsl(var(--primary)); }
+  }
+}
+
+/* Portal Card Pulse Animation - Themed */
+@keyframes pulse-effect {
+  0% {
+    /* Using Neon Cyan and Electric Blue for pulse */
+    box-shadow: 0 0 20px hsla(var(--accent), 0.4), 0 0 40px hsla(var(--primary), 0.2), inset 0 0 15px hsla(var(--accent), 0.15);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 40px hsla(var(--accent), 0.7), 0 0 60px hsla(var(--primary), 0.4), inset 0 0 25px hsla(var(--accent), 0.3);
+    transform: scale(1.03); /* Slightly more subtle pulse */
+  }
+  100% {
+    box-shadow: 0 0 20px hsla(var(--accent), 0.4), 0 0 40px hsla(var(--primary), 0.2), inset 0 0 15px hsla(var(--accent), 0.15);
+    transform: scale(1);
+  }
+}
+
+.pulse-effect {
+  animation: pulse-effect 0.6s ease-in-out;
+}
+
+/* Search Bar Styles - Themed */
+.search-box {
+  /* Positioned by Topbar's flex container */
+  height: 40px;
+  background-color: hsl(var(--card)); /* Use card background */
+  border-radius: 40px; /* Pill-shape */
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  border: 1px solid hsl(var(--border));
+  padding-left: 5px; /* Initial padding for the button area */
+  transition: border-color 0.3s ease; /* Smooth border transition */
+}
+
+.search-input {
+  background-color: transparent;
+  color: hsl(var(--foreground));
+  outline: none;
+  border: none;
+  height: 100%; /* Fill height of search-box's content area */
+  line-height: normal; /* Reset line-height */
+  width: 0px; /* Initially hidden */
+  font-size: 0.875rem; /* text-sm equivalent */
+  transition: width 0.4s ease, margin 0.4s ease, padding 0.4s ease;
+  font-family: inherit; /* Inherit from body ('Inter', sans-serif) */
+  padding-left: 0;
+  padding-right: 0;
+  box-sizing: border-box;
+  min-width: 0; /* Important for flex children that shrink */
+}
+
+.search-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  background-color: transparent;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  color: hsl(var(--muted-foreground)); /* Muted color for icon initially */
+  transition: background-color 0.3s ease, color 0.3s ease;
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0; /* Prevent button from shrinking */
+  padding: 0;
+  margin-right: 5px; /* Consistent spacing for the button on the right */
+}
+
+/* Expansion and focus effects */
+.search-box:hover > .search-input,
+.search-input:focus {
+  width: 200px; /* Expanded width */
+  margin-left: 8px; /* Space before input */
+  margin-right: 8px; /* Space between input and button */
+  padding-left: 10px; /* Internal padding for text */
+}
+
+/* Styling the search-box itself on hover or when the input within it is focused */
+.search-box:hover,
+.search-box:has(.search-input:focus) {
+  border-color: hsl(var(--ring)); /* Highlight border with ring color */
+}
+
+/* Change button appearance on hover of the box, or when input is focused */
+.search-box:hover > .search-btn,
+.search-input:focus + .search-btn {
+  color: hsl(var(--primary)); /* Change icon to primary color */
+}
+
+/* Search Bar Aurora Effect */
+.search-aurora-wrapper {
+  position: relative;
+  z-index: 1;
+}
+
+/* The aurora glow effect */
+.search-aurora-glow {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: 30px;
+  background: radial-gradient(
+    ellipse at center,
+    hsla(var(--primary), 0.15) 0%,
+    hsla(var(--primary), 0.05) 40%,
+    transparent 80%
+  );
+  filter: blur(8px);
+  z-index: -1;
+  animation: aurora-pulse 4s ease-in-out infinite;
+}
+
+/* Animation matching your existing pulse-effect animations */
+@keyframes aurora-pulse {
+  0% {
+    opacity: 0.7;
+    box-shadow: 0 0 10px hsla(var(--accent), 0.2), 0 0 20px hsla(var(--primary), 0.1);
+  }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 15px hsla(var(--accent), 0.3), 0 0 30px hsla(var(--primary), 0.2);
+  }
+  100% {
+    opacity: 0.7;
+    box-shadow: 0 0 10px hsla(var(--accent), 0.2), 0 0 20px hsla(var(--primary), 0.1);
+  }
+}
+/* Floating animation for cards if needed */
+/*
+@keyframes floating {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
+.card-floating {
+    animation: floating 4s ease-in-out infinite;
+}
+*/
+
+/* Tailwind's JIT can handle most transforms, but for complex combined states like these,
+   it might be cleaner to define specific classes or use inline styles in React directly.
+   For this example, we will use inline styles for the complex transforms on cards.
+*/
